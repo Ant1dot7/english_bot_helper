@@ -39,6 +39,3 @@ def listening_inline_but():
             listening_text_buttons.insert(button)
         listening_texts_buttons_dick[i] = listening_text_buttons  # сформированную группу кнопок передаем в словарь под номером категории
     return listening_texts_buttons_dick
-
-
-show_text = InlineKeyboardMarkup(row_width=1).add(InlineKeyboardButton(text='Показать текст', callback_data='show_text'))
