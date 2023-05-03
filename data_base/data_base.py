@@ -11,6 +11,7 @@ async def sql_start():
         print('Data base connected OK!')
     base.execute('CREATE TABLE IF NOT EXISTS audio(title TEXT, file TEXT, cat INTEGER, description TEXT, FOREIGN KEY (cat) REFERENCES category(id))')
     base.execute('CREATE TABLE IF NOT EXISTS category(id INTEGER PRIMARY KEY, title TEXT)')
+    base.execute('CREATE TABLE IF NOT EXISTS words_repeat(id INTEGER PRIMARY KEY, user_id INTEGER, words TEXT)')
     base.commit()
 
 
@@ -55,6 +56,30 @@ async def get_audio(title):
     cur.execute("SELECT * FROM audio WHERE title = ?", (title,))
     audio_text = cur.fetchone()
     return audio_text
+
+
+async def save_words_to_repeat(id, words):
+    """Сохраняем выбранный пользователем список слов в базу данных"""
+
+    result = base.execute("SELECT words FROM words_repeat WHERE user_id = ?", (id,)).fetchone()
+    if result is not None and words in result[0]:
+        return True
+    else:
+        count = base.execute("SELECT COUNT(*) FROM words_repeat WHERE user_id = ?", (id,)).fetchone()[0]
+        if count == 0:
+            base.execute("INSERT INTO words_repeat(user_id, words) VALUES (?, ?)", (id, words))
+        else:
+            base.execute("UPDATE words_repeat SET words = words || ? WHERE user_id = ?", (words, id))
+        base.commit()
+
+
+async def get_words_to_repeat(id):
+    """Выдаем сохраненный список слов по запросу 'повторения слов' """
+
+    result = base.execute("SELECT words FROM words_repeat WHERE user_id = ?", (id,)).fetchone()
+    return result[0] if result else None
+
+
 
 # async def add_cat(state):
 #     cur.execute("INSERT INTO category (title) VALUES ('Простые тексты')")
