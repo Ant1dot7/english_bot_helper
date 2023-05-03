@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 import sqlite3
-
+from test import get_all_words
 
 def start_menu_butons():
     """Создание кнопок на стартовом меню"""
@@ -39,3 +39,10 @@ def listening_inline_but():
             listening_text_buttons.insert(button)
         listening_texts_buttons_dick[i] = listening_text_buttons  # сформированную группу кнопок передаем в словарь под номером категории
     return listening_texts_buttons_dick
+
+
+def words_buttons():
+    """Инлайн кнопки для показа следующего списка слов"""
+
+    button = InlineKeyboardMarkup(row_width=1).add(InlineKeyboardButton(text="Показать ещё", callback_data=f'more_word'))
+    return button
