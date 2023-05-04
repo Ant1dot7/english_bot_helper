@@ -46,7 +46,8 @@ def words_menu():
 
     begin = KeyboardButton('Начать')
     repeat_words = KeyboardButton('Повторить слова')
-    word_buttons = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(begin).add(repeat_words)
+    del_words = KeyboardButton('Удалить сохраненные записи')
+    word_buttons = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(begin).add(repeat_words).add(del_words)
     return word_buttons
 
 

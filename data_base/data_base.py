@@ -58,28 +58,30 @@ async def get_audio(title):
     return audio_text
 
 
-async def save_words_to_repeat(id, words):
+async def save_words_to_repeat(user_id, words):
     """Сохраняем выбранный пользователем список слов в базу данных"""
 
-    result = base.execute("SELECT words FROM words_repeat WHERE user_id = ?", (id,)).fetchone()
+    result = base.execute("SELECT words FROM words_repeat WHERE user_id = ?", (user_id,)).fetchone()
     if result is not None and words in result[0]:
         return True
     else:
-        count = base.execute("SELECT COUNT(*) FROM words_repeat WHERE user_id = ?", (id,)).fetchone()[0]
+        count = base.execute("SELECT COUNT(*) FROM words_repeat WHERE user_id = ?", (user_id,)).fetchone()[0]
         if count == 0:
-            base.execute("INSERT INTO words_repeat(user_id, words) VALUES (?, ?)", (id, words))
+            base.execute("INSERT INTO words_repeat(user_id, words) VALUES (?, ?)", (user_id, words))
         else:
-            base.execute("UPDATE words_repeat SET words = words || ? WHERE user_id = ?", (words, id))
+            base.execute("UPDATE words_repeat SET words = words || ? WHERE user_id = ?", (words, user_id))
         base.commit()
 
 
-async def get_words_to_repeat(id):
+async def get_words_to_repeat(user_id):
     """Выдаем сохраненный список слов по запросу 'повторения слов' """
 
-    result = base.execute("SELECT words FROM words_repeat WHERE user_id = ?", (id,)).fetchone()
+    result = base.execute("SELECT words FROM words_repeat WHERE user_id = ?", (user_id,)).fetchone()
     return result[0] if result else None
 
 
+async def del_words_to_repeat(user_id):
+    cur.execute('DELETE FROM words_repeat WHERE user_id = ?', (user_id,))
 
 # async def add_cat(state):
 #     cur.execute("INSERT INTO category (title) VALUES ('Простые тексты')")

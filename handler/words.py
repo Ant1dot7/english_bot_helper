@@ -3,7 +3,7 @@ from aiogram.dispatcher.filters import Text
 from create_bot import dp, bot
 from buttons.client_buttons import words_menu
 import csv
-from data_base.data_base import save_words_to_repeat, get_words_to_repeat
+from data_base import data_base
 
 words_dict_from_user = {}
 words_save_from_user = {}
@@ -50,8 +50,8 @@ async def save_to_repeat(callback: types.CallbackQuery):
 
     words = int(callback.data.split('_')[-1])
     words = get_all_words()[words]
-    save = await save_words_to_repeat(callback.from_user.id, words)
-    await del_but_save(callback)
+    save = await data_base.save_words_to_repeat(callback.from_user.id, words)
+    await del_button_save(callback)
     if not save:
         await callback.answer('Данный список сохранен')
     else:
@@ -61,14 +61,14 @@ async def save_to_repeat(callback: types.CallbackQuery):
 async def show_repeat_words(message: types.Message):
     """Показ по запросу слова которые были сохранены пользователем"""
 
-    words_to_repeat = await get_words_to_repeat(message.from_user.id)
+    words_to_repeat = await data_base.get_words_to_repeat(message.from_user.id)
     if words_to_repeat:
         await message.answer(words_to_repeat)
     else:
         await message.answer('Вы ещё не сохранили ни одного списка для повторения')
 
 
-async def del_but_save(callback):
+async def del_button_save(callback):
     """Удаление кнопки <Сохранить> после её нажатия"""
 
     keyboard = callback.message.reply_markup.inline_keyboard
@@ -79,9 +79,13 @@ async def del_but_save(callback):
                 new_keyboard.insert(button)
     await callback.message.edit_reply_markup(reply_markup=new_keyboard)
 
+async def delete_repeat_words(message: types.Message):
+    await data_base.del_words_to_repeat(message.from_user.id)
+    await message.answer('Список слов был удален')
+
 
 def get_all_words():
-    """Получение слоов из csv файла"""
+    """Получение слов из csv файла"""
 
     all_words = {}
     with open('words.csv', 'r', encoding='utf-8') as file:
@@ -95,6 +99,7 @@ def get_all_words():
 
 
 def register_words_hendlers(dp: Dispatcher):
+    dp.register_message_handler(delete_repeat_words, Text(equals='Удалить сохраненные записи', ignore_case=True))
     dp.register_message_handler(show_repeat_words, Text(equals='Повторить слова', ignore_case=True))
     dp.register_message_handler(first_ten_words, Text(equals='Начать', ignore_case=True))
     dp.register_message_handler(start_command_words, Text(equals='Слова', ignore_case=True))
