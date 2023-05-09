@@ -1,8 +1,10 @@
-from aiogram import types, Dispatcher
-from aiogram.dispatcher.filters import Text
-from create_bot import dp, bot
-from buttons.client_buttons import words_menu
 import csv
+
+from aiogram import Dispatcher, types
+from aiogram.dispatcher.filters import Text
+
+from buttons.client_buttons import words_menu
+from create_bot import bot, dp
 from data_base import data_base
 
 words_dict_from_user = {}
@@ -11,7 +13,7 @@ words_save_from_user = {}
 
 async def start_command_words(message: types.Message):
     """Старт работы со словами"""
-
+    await message.delete()
     await message.answer('Я буду показывать тебе слова, если знаешь их жми "Показать ещё".\nНажми "начать", чтобы проверить свои знания',
                          reply_markup=words_menu()
                          )
@@ -23,8 +25,8 @@ async def first_ten_words(message: types.Message):
     words_dict_from_user[message.from_user.id] = 0  # начало отсчета нажатия кнопки
     ans = get_all_words()[words_dict_from_user[message.from_user.id]]  # загружаем слова из списка для конкретного пользователя
 
-    show_more = types.InlineKeyboardButton(text="Показать ещё", callback_data='more_word')
-    remember_button = types.InlineKeyboardButton(text="Сохранить для повторения", callback_data=f'save_{words_dict_from_user[message.from_user.id]}')  # кнопка, которая сохраняет конкретный список слов в базу данных
+    show_more = types.InlineKeyboardButton(text="Показать ещё \U0001F4DC", callback_data='more_word')
+    remember_button = types.InlineKeyboardButton(text="Сохранить для повторения \U0001F4BE", callback_data=f'save_{words_dict_from_user[message.from_user.id]}')  # кнопка, которая сохраняет конкретный список слов в базу данных
     button = types.InlineKeyboardMarkup(row_width=1).add(show_more).add(remember_button)
     await message.answer(ans, reply_markup=button)
 
@@ -37,8 +39,8 @@ async def more_word(callback: types.CallbackQuery):
     except KeyError:
         words_dict_from_user[callback.from_user.id] = 0
     ans = get_all_words()[words_dict_from_user[callback.from_user.id]]
-    show_more = types.InlineKeyboardButton(text="Показать ещё", callback_data='more_word')
-    remember_button = types.InlineKeyboardButton(text="Сохранить для повторения", callback_data=f'save_{words_dict_from_user[callback.from_user.id]}')
+    show_more = types.InlineKeyboardButton(text="Показать ещё \U0001F4DC", callback_data='more_word')
+    remember_button = types.InlineKeyboardButton(text="Сохранить для повторения \U0001F4BE", callback_data=f'save_{words_dict_from_user[callback.from_user.id]}')
     button = types.InlineKeyboardMarkup(row_width=1).add(show_more).add(remember_button)
     await bot.send_message(callback.from_user.id, ans, reply_markup=button)
     await callback.answer()
@@ -99,7 +101,7 @@ def get_all_words():
 
 
 def register_words_hendlers(dp: Dispatcher):
-    dp.register_message_handler(delete_repeat_words, Text(equals='Удалить сохраненные записи', ignore_case=True))
-    dp.register_message_handler(show_repeat_words, Text(equals='Повторить слова', ignore_case=True))
-    dp.register_message_handler(first_ten_words, Text(equals='Начать', ignore_case=True))
-    dp.register_message_handler(start_command_words, Text(equals='Слова', ignore_case=True))
+    dp.register_message_handler(delete_repeat_words, Text(equals='\U0000274C Удалить сохраненные записи \U0000274C', ignore_case=True))
+    dp.register_message_handler(show_repeat_words, Text(equals='\U0001F504 Повторить слова \U0001F504', ignore_case=True))
+    dp.register_message_handler(first_ten_words, Text(equals='\U0001F3C1 Начать \U0001F3C1', ignore_case=True))
+    dp.register_message_handler(start_command_words, Text(equals=['\U0001F60E Слова \U0001F60E', '/words'], ignore_case=True))

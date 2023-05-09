@@ -12,6 +12,9 @@ async def sql_start():
     base.execute('CREATE TABLE IF NOT EXISTS audio(title TEXT, file TEXT, cat INTEGER, description TEXT, FOREIGN KEY (cat) REFERENCES category(id))')
     base.execute('CREATE TABLE IF NOT EXISTS category(id INTEGER PRIMARY KEY, title TEXT)')
     base.execute('CREATE TABLE IF NOT EXISTS words_repeat(id INTEGER PRIMARY KEY, user_id INTEGER, words TEXT)')
+    base.execute('CREATE TABLE IF NOT EXISTS test(id INTEGER PRIMARY KEY, title TEXT UNIQUE)')
+    base.execute("CREATE TABLE IF NOT EXISTS questions(id INTEGER PRIMARY KEY,question TEXT,test_title TEXT,correct_answer TEXT CHECK(correct_answer IN ('A', 'B', 'C', 'D')),FOREIGN KEY(test_title) REFERENCES test(title))")
+
     base.commit()
 
 
@@ -76,12 +79,20 @@ async def save_words_to_repeat(user_id, words):
 async def get_words_to_repeat(user_id):
     """Выдаем сохраненный список слов по запросу 'повторения слов' """
 
-    result = base.execute("SELECT words FROM words_repeat WHERE user_id = ?", (user_id,)).fetchone()
+    result = base.execute('SELECT words FROM words_repeat WHERE user_id = ?', (user_id,)).fetchone()
     return result[0] if result else None
 
 
 async def del_words_to_repeat(user_id):
+    """Удаление слов для повторения по запросу"""
+
     cur.execute('DELETE FROM words_repeat WHERE user_id = ?', (user_id,))
+
+
+async def get_questions(test):
+    cur.execute(f"SELECT * FROM questions WHERE test_title='{test}'")
+    questions = cur.fetchall()
+    return questions
 
 # async def add_cat(state):
 #     cur.execute("INSERT INTO category (title) VALUES ('Простые тексты')")

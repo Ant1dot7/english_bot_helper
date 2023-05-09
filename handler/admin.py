@@ -1,12 +1,14 @@
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from create_bot import dp, bot
-from aiogram import types, Dispatcher
-from aiogram.dispatcher.filters import Text
-from data_base import data_base
-from buttons import admin_buttons
-from dotenv import load_dotenv
 import os
+
+from aiogram import Dispatcher, types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import Text
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from dotenv import load_dotenv
+
+from buttons import admin_buttons
+from create_bot import bot, dp
+from data_base import data_base
 
 load_dotenv()
 

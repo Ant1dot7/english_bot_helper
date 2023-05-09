@@ -1,22 +1,24 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 import sqlite3
+from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
+                           KeyboardButton, ReplyKeyboardMarkup)
 
 
 def start_menu_butons():
     """Создание кнопок на стартовом меню"""
 
-    button_listening = KeyboardButton('Аудирование')
-    button_word = KeyboardButton('Слова')
-    menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True).add(button_listening).add(button_word)  # row, insert, add
+    button_listening = KeyboardButton('\U0001F3B5 Аудирование \U0001F3B5')
+    button_word = KeyboardButton('\U0001F60E Слова \U0001F60E')
+    button_test = KeyboardButton('\U0001F4DA Тесты \U0001F4DA')
+    menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True).add(button_listening).add(button_word).add(button_test)  # row, insert, add
     return menu_buttons
 
 
 def listening_menu():
     """Создание кнопок после выбора <Аудирование> """
 
-    easy_texts = KeyboardButton('Easy texts')
-    medium_texts = KeyboardButton('Medium texts')
-    hard_texts = KeyboardButton('Hard texts')
+    easy_texts = KeyboardButton('\U0001F600 Easy texts')
+    medium_texts = KeyboardButton('\U0001F914 Medium texts')
+    hard_texts = KeyboardButton('\U0001F92F Hard texts')
     texts_buttons = ReplyKeyboardMarkup(resize_keyboard=True).add(easy_texts).add(medium_texts).insert(hard_texts)
     return texts_buttons
 
@@ -44,10 +46,35 @@ def listening_inline_but():
 def words_menu():
     """Создание кнопок после выбора <Слова> """
 
-    begin = KeyboardButton('Начать')
-    repeat_words = KeyboardButton('Повторить слова')
-    del_words = KeyboardButton('Удалить сохраненные записи')
+    begin = KeyboardButton('\U0001F3C1 Начать \U0001F3C1')
+    repeat_words = KeyboardButton('\U0001F504 Повторить слова \U0001F504')
+    del_words = KeyboardButton('\U0000274C Удалить сохраненные записи \U0000274C')
     word_buttons = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(begin).add(repeat_words).add(del_words)
     return word_buttons
 
 
+def tests_inline_button():
+    """Создаем кнопки со всеми тестами"""
+
+    base = sqlite3.connect('data_base/english_texts.db')
+    cur = base.cursor()
+    cur.execute(f"SELECT * FROM test ")
+    all_tests = cur.fetchall()
+    base.close()
+    tests_buttons = InlineKeyboardMarkup(row_width=2)
+    for test in all_tests:
+        button = InlineKeyboardButton(test[1]+'\U0001F4DA', callback_data=f'test_{test[1]}')
+        tests_buttons.insert(button)
+    return tests_buttons
+
+
+def answer_for_test_button():
+    """Четыре кнопки с выбором ответа"""
+
+    answer_button = InlineKeyboardMarkup(row_width=2)
+    A = InlineKeyboardButton('A', callback_data='answer_A')
+    B = InlineKeyboardButton('B', callback_data='answer_B')
+    C = InlineKeyboardButton('C', callback_data='answer_C')
+    D = InlineKeyboardButton('D', callback_data='answer_D')
+    answer_button.insert(A).insert(B).insert(C).insert(D)
+    return answer_button

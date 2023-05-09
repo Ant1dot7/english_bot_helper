@@ -1,5 +1,6 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 import sqlite3
+
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 
 def admin_but():
@@ -24,5 +25,5 @@ def categories_but():
 
 
 def start_menu_buttons_admin():
-    start_buttons_admin = ReplyKeyboardMarkup(resize_keyboard=True).add('Аудирование').add('Слова').add('/admin')  # row, insert, add
+    start_buttons_admin = ReplyKeyboardMarkup(resize_keyboard=True).add('Аудирование').add('Слова').add('Тесты').add('/admin')  # row, insert, add
     return start_buttons_admin
