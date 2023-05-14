@@ -4,7 +4,7 @@
 
 ## Установка 
 ```
-git clone https://github.com/your_username/bot-helper-english.git
+git clone https://github.com/Ant1dot7/english_bot_helper
 pip install -r requirements.txt
 sudo service redis-server start
 ```
@@ -12,6 +12,7 @@ sudo service redis-server start
 ## Использование
 
 Запустить бота:
+
 Cоздать в корне проекта файл .env и поместить в него bot_token=ваш токкен
 ```
 python3 main.py
