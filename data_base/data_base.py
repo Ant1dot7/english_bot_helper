@@ -87,6 +87,7 @@ async def del_words_to_repeat(user_id):
     """Удаление слов для повторения по запросу"""
 
     cur.execute('DELETE FROM words_repeat WHERE user_id = ?', (user_id,))
+    base.commit()
 
 
 async def get_questions(test):
@@ -94,7 +95,4 @@ async def get_questions(test):
     questions = cur.fetchall()
     return questions
 
-# async def add_cat(state):
-#     cur.execute("INSERT INTO category (title) VALUES ('Простые тексты')")
-#     base.commit()
-#     base.close()
+

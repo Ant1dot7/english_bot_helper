@@ -25,5 +25,5 @@ def categories_but():
 
 
 def start_menu_buttons_admin():
-    start_buttons_admin = ReplyKeyboardMarkup(resize_keyboard=True).add('Аудирование').add('Слова').add('Тесты').add('/admin')  # row, insert, add
+    start_buttons_admin = ReplyKeyboardMarkup(resize_keyboard=True).add('\U0001F3B5 Аудирование \U0001F3B5').add('\U0001F4DD Слова \U0001F4DD').add('\U0001F4DA Тесты \U0001F4DA').add('/admin')  # row, insert, add
     return start_buttons_admin

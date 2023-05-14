@@ -7,9 +7,9 @@ def start_menu_butons():
     """Создание кнопок на стартовом меню"""
 
     button_listening = KeyboardButton('\U0001F3B5 Аудирование \U0001F3B5')
-    button_word = KeyboardButton('\U0001F60E Слова \U0001F60E')
+    button_word = KeyboardButton('\U0001F4DD Слова \U0001F4DD')
     button_test = KeyboardButton('\U0001F4DA Тесты \U0001F4DA')
-    menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True).add(button_listening).add(button_word).add(button_test)  # row, insert, add
+    menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder='Choose one').add(button_listening).add(button_word).add(button_test)  # row, insert, add
     return menu_buttons
 
 
@@ -63,7 +63,7 @@ def tests_inline_button():
     base.close()
     tests_buttons = InlineKeyboardMarkup(row_width=2)
     for test in all_tests:
-        button = InlineKeyboardButton(test[1]+'\U0001F4DA', callback_data=f'test_{test[1]}')
+        button = InlineKeyboardButton(test[1] + '\U0001F4DA', callback_data=f'test_{test[1]}')
         tests_buttons.insert(button)
     return tests_buttons
 
@@ -78,3 +78,10 @@ def answer_for_test_button():
     D = InlineKeyboardButton('D', callback_data='answer_D')
     answer_button.insert(A).insert(B).insert(C).insert(D)
     return answer_button
+
+
+def button_show_more_remember_button(number):
+    show_more = InlineKeyboardButton(text="Показать ещё \U0001F4DC", callback_data='more_word')
+    remember_button = InlineKeyboardButton(text="Сохранить для повторения \U0001F4BE", callback_data=f'save_{number}')
+    kb = InlineKeyboardMarkup(row_width=1).add(show_more).add(remember_button)
+    return kb
