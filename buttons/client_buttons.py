@@ -9,7 +9,9 @@ def start_menu_butons():
     button_listening = KeyboardButton('\U0001F3B5 Аудирование \U0001F3B5')
     button_word = KeyboardButton('\U0001F4DD Слова \U0001F4DD')
     button_test = KeyboardButton('\U0001F4DA Тесты \U0001F4DA')
-    menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder='Choose one').add(button_listening).add(button_word).add(button_test)  # row, insert, add
+    button_what = KeyboardButton('❓ Что на фото? ❓')
+    menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder='Choose one').insert(button_listening). \
+        insert(button_word).insert(button_test).insert(button_what)  # row, insert, add
     return menu_buttons
 
 
@@ -47,9 +49,10 @@ def words_menu():
     """Создание кнопок после выбора <Слова> """
 
     begin = KeyboardButton('\U0001F3C1 Начать \U0001F3C1')
+    continues = KeyboardButton('🔜 Продолжить 🔜')
     repeat_words = KeyboardButton('\U0001F504 Повторить слова \U0001F504')
     del_words = KeyboardButton('\U0000274C Удалить сохраненные записи \U0000274C')
-    word_buttons = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(begin).add(repeat_words).add(del_words)
+    word_buttons = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(begin).add(continues).add(repeat_words).add(del_words)
     return word_buttons
 
 
@@ -81,7 +84,18 @@ def answer_for_test_button():
 
 
 def button_show_more_remember_button(number):
+    """Инлайн кнопки для показа и сохранения слов в бд
+       из раздела показа 2000 слов"""
+
     show_more = InlineKeyboardButton(text="Показать ещё \U0001F4DC", callback_data='more_word')
     remember_button = InlineKeyboardButton(text="Сохранить для повторения \U0001F4BE", callback_data=f'save_{number}')
     kb = InlineKeyboardMarkup(row_width=1).add(show_more).add(remember_button)
     return kb
+
+
+def stop_picture_button():
+    """Кнопка остановить машину-состояния и выйти из показа картинок
+       в разделе <Что на фото>"""
+
+    stop_button = ReplyKeyboardMarkup(resize_keyboard=True).add('Остановить ⛔')
+    return stop_button

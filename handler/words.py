@@ -43,8 +43,10 @@ async def more_word(callback: types.CallbackQuery):
         answer = all_words[f'{words_dict_from_user[str(callback.from_user.id)]}']
 
     await bot.send_message(callback.from_user.id, answer, reply_markup=button_show_more_remember_button(words_dict_from_user[str(callback.from_user.id)]))
-    await callback.answer()
-
+    try:
+        await callback.answer()
+    except TypeError:
+        pass
 
 @dp.callback_query_handler(Text(startswith='save'))
 async def save_to_repeat(callback: types.CallbackQuery):
@@ -97,4 +99,5 @@ def register_words_handlers(dp: Dispatcher):
     dp.register_message_handler(delete_repeat_words, Text(equals='\U0000274C Удалить сохраненные записи \U0000274C', ignore_case=True))
     dp.register_message_handler(show_repeat_words, Text(equals='\U0001F504 Повторить слова \U0001F504', ignore_case=True))
     dp.register_message_handler(first_ten_words, Text(equals='\U0001F3C1 Начать \U0001F3C1', ignore_case=True))
+    dp.register_message_handler(more_word, Text(equals='🔜 Продолжить 🔜', ignore_case=True))
     dp.register_message_handler(start_command_words, Text(equals=['\U0001F4DD Слова \U0001F4DD', '/words'], ignore_case=True))

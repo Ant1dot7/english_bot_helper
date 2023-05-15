@@ -14,41 +14,8 @@ async def sql_start():
     base.execute('CREATE TABLE IF NOT EXISTS words_repeat(id INTEGER PRIMARY KEY, user_id INTEGER, words TEXT)')
     base.execute('CREATE TABLE IF NOT EXISTS test(id INTEGER PRIMARY KEY, title TEXT UNIQUE)')
     base.execute("CREATE TABLE IF NOT EXISTS questions(id INTEGER PRIMARY KEY,question TEXT,test_title TEXT,correct_answer TEXT CHECK(correct_answer IN ('A', 'B', 'C', 'D')),FOREIGN KEY(test_title) REFERENCES test(title))")
-
+    base.execute('CREATE TABLE IF NOT EXISTS pictures(id INTEGER PRIMARY KEY, path TEXT UNIQUE, value TEXT)')
     base.commit()
-
-
-async def add_cat(state):
-    """Добавление категорий в базу данных через /admin в боте"""
-
-    async with state.proxy() as data:
-        title = data.get('title')
-        query = "INSERT INTO category (title) VALUES (?)"
-        base.execute(query, (title,))
-        base.commit()
-
-
-async def add_audio(state):
-    """Добавление аудио в базу данных через /admin в боте"""
-
-    async with state.proxy() as data:
-        title = data['title']
-        audio_file = data['audio']
-        category_name = data['category']
-        description = data['description']
-        category_id = await get_category_id(category_name)
-        cur.execute("INSERT INTO audio (title, file, cat, description) VALUES (?, ?, ?, ?)", (title, audio_file, category_id, description))
-        base.commit()
-
-
-async def get_category_id(category_name):
-    """Получение категории для добавления аудио в бд"""
-
-    # Получаем ID категории по её названию
-    cur.execute("SELECT id FROM category WHERE title=?", (category_name,))
-    result = cur.fetchone()
-    category_id = result[0]
-    return category_id
 
 
 async def get_audio(title):
@@ -91,8 +58,20 @@ async def del_words_to_repeat(user_id):
 
 
 async def get_questions(test):
+    """Получение вопросов для теста, по названию теста"""
+
     cur.execute(f"SELECT * FROM questions WHERE test_title='{test}'")
     questions = cur.fetchall()
     return questions
 
 
+async def get_pictures_to_game():
+    """Получаем все данные для игры Что на фото
+       Делим на список по 5 картинок и выдаем по одной"""
+
+    base = sqlite3.connect('data_base/english_texts.db')
+    cur = base.cursor()
+    cur.execute('SELECT path, value FROM pictures')
+    records = cur.fetchall()
+    sublist = [records[i:i + 5] for i in range(0, len(records), 5)]
+    return sublist

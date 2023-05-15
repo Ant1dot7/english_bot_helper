@@ -40,6 +40,7 @@ async def start_test(callback: types.CallbackQuery):
 async def get_answer(callback: types.CallbackQuery):
     """После ответа на первый вопрос (и последующие) проверяем на правильность ответа.
     Узнаем был ли это последний вопрос в данном тесте или нет. Если да завершаем. Иначе выдаем следующий вопрос"""
+
     user = str(callback.from_user.id)
     async with aioredis.from_url("redis://localhost") as redis:
         answer_dict = json.loads(await redis.get('english_tests'))
@@ -55,7 +56,7 @@ async def get_answer(callback: types.CallbackQuery):
         await asyncio.sleep(2)
         if len(answer_dict[user][0]) == number_questions:  # проверяем последний ли вопрос в тесте или нет
             del answer_dict[user]
-            await redis.set('english_tests', json.dumps(answer_dict))
+            await bot.send_message(user, 'Вот тесты для прохождения \U0001F4DA:', reply_markup=tests_inline_button())
             await callback.answer()
         else:
             questions = answer_dict[user][0][number_questions]

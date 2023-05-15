@@ -1,16 +1,20 @@
 import sqlite3
-
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 
 def admin_but():
+    """Админ кнопки на добавление новых позиций в бд"""
+
     button_add_category = KeyboardButton('Добавить категорию')
     button_add_audio = KeyboardButton('Добавить аудио')
-    admin_buttons = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(button_add_category).add(button_add_audio)
+    button_add_picture = KeyboardButton('Добавить картинку')
+    admin_buttons = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(button_add_category).add(button_add_audio).add(button_add_picture)
     return admin_buttons
 
 
 def categories_but():
+    """Админ кнопки на выбор категорий для добавления аудио"""
+
     base = sqlite3.connect('data_base/english_texts.db')
     cur = base.cursor()
     cur.execute('SELECT * FROM category')
@@ -25,5 +29,9 @@ def categories_but():
 
 
 def start_menu_buttons_admin():
-    start_buttons_admin = ReplyKeyboardMarkup(resize_keyboard=True).add('\U0001F3B5 Аудирование \U0001F3B5').add('\U0001F4DD Слова \U0001F4DD').add('\U0001F4DA Тесты \U0001F4DA').add('/admin')  # row, insert, add
+    """Админ меню при старте с кнопкой </admin>"""
+
+    start_buttons_admin = ReplyKeyboardMarkup(resize_keyboard=True).\
+        insert('\U0001F3B5 Аудирование \U0001F3B5').insert('\U0001F4DD Слова \U0001F4DD').\
+        insert('\U0001F4DA Тесты \U0001F4DA').insert('❓ Что на фото? ❓').insert('/admin')  # row, insert, add
     return start_buttons_admin

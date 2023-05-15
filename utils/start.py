@@ -21,6 +21,7 @@ async def start_command(message: types.Message):
 
 async def get_all_words():
     """Запись слов из csv файла в redis"""
+
     all_words = {}
     with open('utils/words.csv', 'r', encoding='utf-8') as file:
         words_2000 = csv.reader(file)
@@ -32,6 +33,7 @@ async def get_all_words():
     async with aioredis.from_url("redis://localhost") as redis:
         await redis.set('words_to_translate', json.dumps(all_words))
         print("Слова из csv прочитаны")
+
 
 
 def register_handlers_start(dp: Dispatcher):

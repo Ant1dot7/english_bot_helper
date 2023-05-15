@@ -1,7 +1,7 @@
 from aiogram.utils import executor
 from create_bot import dp
 from data_base import data_base
-from handler import admin, audir, words, tests
+from handler import admin, audir, words, tests, what_on_picture
 from utils import start
 
 
@@ -16,4 +16,6 @@ admin.rester_handlers_admin(dp)
 words.register_words_handlers(dp)
 tests.register_test_handlers(dp)
 start.register_handlers_start(dp)
+what_on_picture.rester_handlers_picture(dp)
+
 executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
